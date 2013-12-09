@@ -167,9 +167,24 @@ namespace SAI_Exporter
             return smartScripts;
         }
 
+        public async Task<List<SmartScript>> GetSmartScriptsDistinctNonActionlist()
+        {
+            DataTable dt = await ExecuteQuery("SELECT DISTINCT * FROM smart_scripts WHERE source_type != 9 ORDER BY entryorguid");
+
+            if (dt.Rows.Count == 0)
+                return null;
+
+            List<SmartScript> smartScripts = new List<SmartScript>();
+
+            foreach (DataRow row in dt.Rows)
+                smartScripts.Add(BuildSmartScript(row));
+
+            return smartScripts;
+        }
+
         public async Task<List<SmartScript>> GetSmartScriptsDistinct()
         {
-            DataTable dt = await ExecuteQuery("SELECT DISTINCT * FROM smart_scripts ORDER BY entryorguid;");
+            DataTable dt = await ExecuteQuery("SELECT DISTINCT * FROM smart_scripts ORDER BY entryorguid");
 
             if (dt.Rows.Count == 0)
                 return null;

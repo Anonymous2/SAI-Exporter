@@ -53,7 +53,7 @@ namespace SAI_Exporter
 
             try
             {
-                List<SmartScript> smartScriptsDistinct = await worldDatabase.GetSmartScriptsDistinct();
+                List<SmartScript> smartScriptsDistinct = await worldDatabase.GetSmartScriptsDistinctNonActionlist();
 
                 if (smartScriptsDistinct.Count == 0)
                 {
@@ -107,7 +107,7 @@ namespace SAI_Exporter
                                 break;
                             case SourceTypes.SourceTypeNone:
                             case SourceTypes.SourceTypeScriptedActionlist:
-                                return;
+                                continue;
                         }
 
                         fullLine += "DELETE FROM `smart_scripts` WHERE `entryorguid`=" + entryOrGuidSET + " AND `source_type`=" + smartScriptDistinct.source_type + ";\n";
