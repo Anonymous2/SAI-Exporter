@@ -44,9 +44,9 @@ namespace SAI_Exporter
 
             try
             {
-                List<SmartScript> smartScripts = await worldDatabase.GetSmartScripts();
+                List<SmartScript> smartScriptsDistinct = await worldDatabase.GetSmartScriptsDistinct();
 
-                if (smartScripts.Count == 0)
+                if (smartScriptsDistinct.Count == 0)
                 {
                     Console.WriteLine("No smart_script entries were found in your database.");
                     return;
@@ -56,51 +56,59 @@ namespace SAI_Exporter
 
                 using (var outputFile = new StreamWriter("output.sql", true))
                 {
-                    //foreach (DataRow row in dataTable.Rows)
-                    foreach (SmartScript smartScript in smartScripts)
+                    foreach (SmartScript smartScriptDistinct in smartScriptsDistinct)
                     {
-                        //SmartScript smartScript = BuildSmartScript(row);
-                        //MySqlCommand command = new MySqlCommand();
-                        //command.Connection = connection;
-
                         string fullLine = String.Empty;
-                        int entryorguid = smartScript.entryorguid;
-                        SourceTypes sourceType = (SourceTypes)smartScript.source_type;
-                        bool isCreatureOrGameobjectGuid = smartScript.entryorguid < 0 && (sourceType == SourceTypes.SourceTypeCreature || sourceType == SourceTypes.SourceTypeGameobject);
+                        int entryorguid = smartScriptDistinct.entryorguid;
+                        SourceTypes sourceType = (SourceTypes)smartScriptDistinct.source_type;
+                        bool isCreatureOrGameobjectGuid = smartScriptDistinct.entryorguid < 0 && (sourceType == SourceTypes.SourceTypeCreature || sourceType == SourceTypes.SourceTypeGameobject);
                         string entryOrGuidSET = "@ENTRY";
 
                         if (isCreatureOrGameobjectGuid)
-                            entryorguid = await worldDatabase.GetObjectIdByGuidAndSourceType(-smartScript.entryorguid, (int)sourceType);
+                            entryorguid = await worldDatabase.GetObjectIdByGuidAndSourceType(-smartScriptDistinct.entryorguid, (int)sourceType);
 
-                        fullLine += "-- " + await worldDatabase.GetCreatureNameById(entryorguid) + " SAI";
+                        fullLine += "-- " + await worldDatabase.GetCreatureNameById(entryorguid) + " SAI\n";
 
                         if (isCreatureOrGameobjectGuid)
                         {
-                            fullLine += "SET @GUID := " + smartScript.entryorguid;
+                            fullLine += "SET @GUID := " + smartScriptDistinct.entryorguid + ";\n";
                             entryOrGuidSET = "@GUID";
                         }
                         else
-                            fullLine += "SET @ENTRY := " + smartScript.entryorguid;
+                            fullLine += "SET @ENTRY := " + smartScriptDistinct.entryorguid + ";\n";
 
+                        fullLine += "DELETE FROM `smart_scripts` WHERE `entryorguid`=" + entryOrGuidSET + " AND `source_type`=" + smartScriptDistinct.source_type + ";\n";
                         fullLine += "INSERT INTO `smart_scripts` (`entryorguid`,`source_type`,`id`,`link`,`event_type`,`event_phase_mask`,`event_chance`,`event_flags`,`event_param1`,`event_param2`,`event_param3`,`event_param4`,`action_type`,`action_param1`,`action_param2`,`action_param3`,`action_param4`,`action_param5`,`action_param6`,`target_type`,`target_param1`,`target_param2`,`target_param3`,`target_x`,`target_y`,`target_z`,`target_o`,`comment`) VALUES\n";
+                        
+                        List<SmartScript> smartScripts = await worldDatabase.GetSmartScripts(smartScriptDistinct.entryorguid, smartScriptDistinct.source_type);
 
-                        switch (sourceType)
+                        for (int i = 0; i < smartScripts.Count; ++i)
                         {
-                            case SourceTypes.SourceTypeCreature:
+                            SmartScript smartScript = smartScripts[i];
 
-                                fullLine += entryOrGuidSET + "," + smartScript.source_type + "," + smartScript.id + "," + smartScript.link + "," + smartScript.event_type + "," +
-                                                                smartScript.event_phase_mask + "," + smartScript.event_chance + "," + smartScript.event_flags + "," + smartScript.event_param1 + "," +
-                                                                smartScript.event_param2 + "," + smartScript.event_param3 + "," + smartScript.event_param4 + "," + smartScript.action_type + "," +
-                                                                smartScript.action_param1 + "," + smartScript.action_param2 + "," + smartScript.action_param2 + "," + smartScript.action_param4 + "," +
-                                                                smartScript.action_param5 + "," + smartScript.action_param6 + "," + smartScript.target_type + "," + smartScript.target_param1 + "," +
-                                                                smartScript.target_param2 + "," + smartScript.target_param3 + "," + smartScript.target_x + "," + smartScript.target_y + "," +
-                                                                smartScript.target_z + "," + smartScript.target_o + "," + '"' + smartScript.comment + '"' + ")";
+                            fullLine += "(" + entryOrGuidSET + "," + smartScript.source_type + "," + smartScript.id + "," + smartScript.link + "," + smartScript.event_type + "," +
+                                                            smartScript.event_phase_mask + "," + smartScript.event_chance + "," + smartScript.event_flags + "," + smartScript.event_param1 + "," +
+                                                            smartScript.event_param2 + "," + smartScript.event_param3 + "," + smartScript.event_param4 + "," + smartScript.action_type + "," +
+                                                            smartScript.action_param1 + "," + smartScript.action_param2 + "," + smartScript.action_param2 + "," + smartScript.action_param4 + "," +
+                                                            smartScript.action_param5 + "," + smartScript.action_param6 + "," + smartScript.target_type + "," + smartScript.target_param1 + "," +
+                                                            smartScript.target_param2 + "," + smartScript.target_param3 + "," + smartScript.target_x + "," + smartScript.target_y + "," +
+                                                            smartScript.target_z + "," + smartScript.target_o + "," + '"' + smartScript.comment + '"' + ")";
 
-                                fullLine += "\n"; //! White line at end of script to make it easier to select
-                                break;
-                            default:
-                                break;
+                            if (i != smartScripts.Count - 1)
+                                fullLine += ",\n";
+                            else
+                                fullLine += ";\n";
+
+                            switch (sourceType)
+                            {
+                                case SourceTypes.SourceTypeCreature:
+                                    break;
+                                default:
+                                    break;
+                            }
                         }
+
+                        outputFile.WriteLine(fullLine);
                     }
                 }
             }

@@ -167,6 +167,21 @@ namespace SAI_Exporter
             return smartScripts;
         }
 
+        public async Task<List<SmartScript>> GetSmartScriptsDistinct()
+        {
+            DataTable dt = await ExecuteQuery("SELECT DISTINCT * FROM smart_scripts ORDER BY entryorguid;");
+
+            if (dt.Rows.Count == 0)
+                return null;
+
+            List<SmartScript> smartScripts = new List<SmartScript>();
+
+            foreach (DataRow row in dt.Rows)
+                smartScripts.Add(BuildSmartScript(row));
+
+            return smartScripts;
+        }
+
         public async Task<List<SmartScript>> GetSmartScripts(int entryorguid, int source_type)
         {
             //DataTable dt = await ExecuteQuery("SELECT * FROM smart_scripts WHERE entryorguid = '@entryorguid' AND source_type = '@source_type'", new MySqlParameter("@entryorguid", entryorguid), new MySqlParameter("@source_type", source_type));
