@@ -152,7 +152,6 @@ namespace SAI_Exporter
             {
                 Console.WriteLine("\n\n\n" + ex.Message);
                 Console.WriteLine("\nPress 'Enter' to write new database information. Any other key exits the application.\n\n");
-                Console.ReadKey();
 
                 if (Console.ReadKey().Key == ConsoleKey.Enter)
                     goto WriteSqlInformation;
@@ -168,7 +167,7 @@ namespace SAI_Exporter
                 return;
             }
 
-            Console.WriteLine("\n\n\nThe converting has finished. If you wish to open the output file with your selected .sql file editor, press Enter.");
+            Console.WriteLine("\n\n\nThe exporting has finished. If you wish to open the output file with your selected .sql file editor, press Enter.");
 
             if (Console.ReadKey().Key == ConsoleKey.Enter)
                 Process.Start("output.sql");
