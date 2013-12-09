@@ -83,7 +83,7 @@ namespace SAI_Exporter
                         if (isCreatureOrGameobjectGuid)
                             entryorguid = await worldDatabase.GetObjectIdByGuidAndSourceType(-smartScriptDistinct.entryorguid, (int)sourceType);
 
-                        fullLine += "-- " + await worldDatabase.GetCreatureNameById(entryorguid) + " SAI\n";
+                        fullLine += "-- " + await worldDatabase.GetObjectNameByIdAndSourceType(entryorguid, (int)sourceType) + " SAI\n";
 
                         if (isCreatureOrGameobjectGuid)
                         {
@@ -107,7 +107,7 @@ namespace SAI_Exporter
                                 break;
                             case SourceTypes.SourceTypeNone:
                             case SourceTypes.SourceTypeScriptedActionlist:
-                                break;
+                                return;
                         }
 
                         fullLine += "DELETE FROM `smart_scripts` WHERE `entryorguid`=" + entryOrGuidSET + " AND `source_type`=" + smartScriptDistinct.source_type + ";\n";
