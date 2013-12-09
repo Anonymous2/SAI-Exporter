@@ -93,7 +93,7 @@ namespace SAI_Exporter
                         else
                             fullLine += "SET @ENTRY := " + smartScriptDistinct.entryorguid + ";\n";
 
-                        switch ((SourceTypes)smartScriptDistinct.source_type)
+                        switch (sourceType)
                         {
                             case SourceTypes.SourceTypeCreature:
                                 fullLine += "UPDATE `creature_template` SET `AIName`=" + '"' + "SmartAI" + '"' + " WHERE `entry`=" + entryOrGuidSET + ";\n";

@@ -101,6 +101,8 @@ namespace SAI_Exporter
                     return await GetCreatureNameById(id);
                 case SourceTypes.SourceTypeGameobject:
                     return await GetGameobjectNameById(id);
+                case SourceTypes.SourceTypeAreaTrigger:
+                    return "Areatrigger";
             }
 
             return String.Empty;
