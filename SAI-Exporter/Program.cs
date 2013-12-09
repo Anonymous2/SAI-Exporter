@@ -25,21 +25,22 @@ namespace SAI_Exporter
         {
         WriteSqlInformation:
             Console.WriteLine("SQL Information:");
-            //Console.Write("Host: ");
-            //string host = Console.ReadLine();
-            //Console.Write("User: ");
-            //string user = Console.ReadLine();
-            //Console.Write("Pass: ");
-            //string pass = Console.ReadLine();
-            //Console.Write("World DB: ");
-            //string worldDB = Console.ReadLine();
-            //Console.Write("Port: ");
-            //string portStr = Console.ReadLine();
-            string host = "localhost";
-            string user = "root";
-            string pass = "123";
-            string worldDB = "trinitycore_world";
-            string portStr = "3306";
+            Console.Write("Host: ");
+            string host = Console.ReadLine();
+            Console.Write("User: ");
+            string user = Console.ReadLine();
+            Console.Write("Pass: ");
+            string pass = Console.ReadLine();
+            Console.Write("World DB: ");
+            string worldDB = Console.ReadLine();
+            Console.Write("Port: ");
+            string portStr = Console.ReadLine();
+
+            //string host = "localhost";
+            //string user = "root";
+            //string pass = "123";
+            //string worldDB = "trinitycore_world";
+            //string portStr = "3306";
 
             UInt32 port;
 
