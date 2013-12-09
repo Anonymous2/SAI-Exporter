@@ -7,12 +7,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MySql.Data.MySqlClient;
+using Nito.AsyncEx;
 
 namespace SAI_Exporter
 {
     class Program
     {
-        static async void Main(string[] args)
+        static void Main(string[] args)
+        {
+            AsyncContext.Run(() => MainAsync(args));
+        }
+
+        static async void MainAsync(string[] args)
         {
         WriteSqlInformation:
             Console.WriteLine("SQL Information:");
