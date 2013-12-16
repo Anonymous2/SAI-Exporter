@@ -127,7 +127,7 @@ namespace SAI_Exporter
                         fullLine += "(" + entryOrGuidSET + "," + smartScript.source_type + "," + smartScript.id + "," + smartScript.link + "," + smartScript.event_type + "," +
                                                         smartScript.event_phase_mask + "," + smartScript.event_chance + "," + smartScript.event_flags + "," + smartScript.event_param1 + "," +
                                                         smartScript.event_param2 + "," + smartScript.event_param3 + "," + smartScript.event_param4 + "," + smartScript.action_type + "," +
-                                                        smartScript.action_param1 + "," + smartScript.action_param2 + "," + smartScript.action_param2 + "," + smartScript.action_param4 + "," +
+                                                        smartScript.action_param1 + "," + smartScript.action_param2 + "," + smartScript.action_param3 + "," + smartScript.action_param4 + "," +
                                                         smartScript.action_param5 + "," + smartScript.action_param6 + "," + smartScript.target_type + "," + smartScript.target_param1 + "," +
                                                         smartScript.target_param2 + "," + smartScript.target_param3 + "," + smartScript.target_x + "," + smartScript.target_y + "," +
                                                         smartScript.target_z + "," + smartScript.target_o + "," + '"' + comment + '"' + ")";
