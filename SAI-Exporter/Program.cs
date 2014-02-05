@@ -36,12 +36,6 @@ namespace SAI_Exporter
             Console.Write("Port: ");
             string portStr = Console.ReadLine();
 
-            //string host = "localhost";
-            //string user = "root";
-            //string pass = "123";
-            //string worldDB = "trinitycore_world";
-            //string portStr = "3306";
-
             UInt32 port;
 
             if (!UInt32.TryParse(portStr, out port))

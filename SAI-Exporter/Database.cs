@@ -33,45 +33,10 @@ namespace SAI_Exporter
             return !exceptionOccurred;
         }
 
-        public async Task<bool> ExecuteNonQuery(string nonQuery, params Parameter[] parameters)
+        public async Task<DataTable> ExecuteQuery(string query, params Parameter[] parameters)
         {
-            bool exceptionOccurred = false;
+            CancellationToken token = new CancellationToken();
 
-            await Task.Run(() =>
-            {
-                using (Connection conn = (Connection)Activator.CreateInstance(typeof(Connection), connectionString.ToString()))
-                {
-                    conn.Open();
-
-                    using (Command cmd = (Command)Activator.CreateInstance(typeof(Command), nonQuery, conn))
-                    {
-                        try
-                        {
-                            foreach (var param in parameters)
-                                cmd.Parameters.Add(param);
-
-                            cmd.ExecuteNonQuery();
-                        }
-                        catch (Exception)
-                        {
-                            exceptionOccurred = true;
-                        }
-                    }
-
-                    conn.Close();
-                }
-            });
-
-            return !exceptionOccurred;
-        }
-
-        public Task<DataTable> ExecuteQuery(string query, params Parameter[] parameters)
-        {
-            return ExecuteQueryWithCancellation(new CancellationToken(), query, parameters);
-        }
-
-        public async Task<DataTable> ExecuteQueryWithCancellation(CancellationToken token, string query, params Parameter[] parameters)
-        {
             return await Task.Run(async () =>
             {
                 using (Connection conn = (Connection)Activator.CreateInstance(typeof(Connection), connectionString.ToString()))
@@ -98,34 +63,6 @@ namespace SAI_Exporter
                         catch (Exception)
                         {
                             return new DataTable();
-                        }
-                    }
-                }
-            });
-        }
-
-        public async Task<object> ExecuteScalar(string query, params Parameter[] parameters)
-        {
-            return await Task.Run(() =>
-            {
-                using (Connection conn = (Connection)Activator.CreateInstance(typeof(Connection), connectionString.ToString()))
-                {
-                    conn.Open();
-
-                    using (Command cmd = (Command)Activator.CreateInstance(typeof(Command), query, conn))
-                    {
-                        foreach (var param in parameters)
-                            cmd.Parameters.Add(param);
-
-                        try
-                        {
-                            object returnVal = cmd.ExecuteScalar();
-                            conn.Close();
-                            return returnVal;
-                        }
-                        catch (Exception)
-                        {
-                            return null;
                         }
                     }
                 }

@@ -63,29 +63,9 @@ namespace SAI_Exporter
             return dt.Rows[0]["name"].ToString();
         }
 
-        public async Task<string> GetCreatureNameByGuid(int guid)
-        {
-            DataTable dt = await ExecuteQuery("SELECT `name` FROM creature_template WHERE entry = '" + await GetCreatureIdByGuid(guid) + "'");
-
-            if (dt.Rows.Count == 0)
-                return String.Empty;
-
-            return dt.Rows[0]["name"].ToString();
-        }
-
         public async Task<string> GetGameobjectNameById(int id)
         {
             DataTable dt = await ExecuteQuery("SELECT name FROM gameobject_template WHERE entry = '" + id + "'");
-
-            if (dt.Rows.Count == 0)
-                return String.Empty;
-
-            return dt.Rows[0]["name"].ToString();
-        }
-
-        public async Task<string> GetGameobjectNameByGuid(int guid)
-        {
-            DataTable dt = await ExecuteQuery("SELECT name FROM gameobject_template WHERE entry = '" + await GetGameobjectIdByGuid(guid) + "'");
 
             if (dt.Rows.Count == 0)
                 return String.Empty;
@@ -108,94 +88,9 @@ namespace SAI_Exporter
             return String.Empty;
         }
 
-        public async Task<string> GetObjectNameByGuidAndSourceType(int guid, int source_type)
-        {
-            switch ((SourceTypes)source_type)
-            {
-                case SourceTypes.SourceTypeCreature:
-                    return await GetCreatureNameByGuid(guid);
-                case SourceTypes.SourceTypeGameobject:
-                    return await GetGameobjectNameByGuid(guid);
-            }
-
-            return String.Empty;
-        }
-
-        public async Task<string> GetObjectNameByIdOrGuidAndSourceType(SourceTypes sourceType, int idOrGuid, bool errorIfNoneFound = false)
-        {
-            string newName = String.Empty;
-
-            switch (sourceType)
-            {
-                case SourceTypes.SourceTypeCreature:
-                    newName = idOrGuid < 0 ? await GetCreatureNameByGuid(-idOrGuid) : await GetCreatureNameById(idOrGuid);
-
-                    if (errorIfNoneFound && String.IsNullOrWhiteSpace(newName))
-                        newName = "<Could not generate name>";
-
-                    return newName;
-                case SourceTypes.SourceTypeGameobject:
-                    newName = idOrGuid < 0 ? await GetGameobjectNameByGuid(-idOrGuid) : await GetGameobjectNameById(idOrGuid);
-
-                    if (errorIfNoneFound && String.IsNullOrWhiteSpace(newName))
-                        newName = "<Could not generate name>";
-
-                    return newName;
-                case SourceTypes.SourceTypeAreaTrigger:
-                    return "Areatrigger";
-            }
-
-            return "<Could not generate name>";
-        }
-
         public async Task<List<SmartScript>> GetSmartScripts()
         {
             DataTable dt = await ExecuteQuery("SELECT * FROM smart_scripts ORDER BY entryorguid");
-
-            if (dt.Rows.Count == 0)
-                return null;
-
-            List<SmartScript> smartScripts = new List<SmartScript>();
-
-            foreach (DataRow row in dt.Rows)
-                smartScripts.Add(BuildSmartScript(row));
-
-            return smartScripts;
-        }
-
-        public async Task<List<SmartScript>> GetSmartScriptsDistinctNonActionlist()
-        {
-            DataTable dt = await ExecuteQuery("SELECT DISTINCT * FROM smart_scripts WHERE source_type != 9 ORDER BY entryorguid");
-
-            if (dt.Rows.Count == 0)
-                return null;
-
-            List<SmartScript> smartScripts = new List<SmartScript>();
-
-            foreach (DataRow row in dt.Rows)
-                smartScripts.Add(BuildSmartScript(row));
-
-            return smartScripts;
-        }
-
-        public async Task<List<SmartScript>> GetSmartScriptsDistinct()
-        {
-            DataTable dt = await ExecuteQuery("SELECT DISTINCT * FROM smart_scripts ORDER BY entryorguid");
-
-            if (dt.Rows.Count == 0)
-                return null;
-
-            List<SmartScript> smartScripts = new List<SmartScript>();
-
-            foreach (DataRow row in dt.Rows)
-                smartScripts.Add(BuildSmartScript(row));
-
-            return smartScripts;
-        }
-
-        public async Task<List<SmartScript>> GetSmartScripts(int entryorguid, int source_type)
-        {
-            DataTable dt = await ExecuteQuery("SELECT * FROM smart_scripts WHERE entryorguid = '" + entryorguid + "' AND source_type = '" + source_type + "'");
 
             if (dt.Rows.Count == 0)
                 return null;

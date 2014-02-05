@@ -12,10 +12,10 @@ namespace SAI_Exporter
         {
             Console.CursorLeft = 0;
             int maxCharacterWidth = Console.WindowWidth - 1;
+
             if (message.Length > maxCharacterWidth)
-            {
                 message = message.Substring(0, maxCharacterWidth - 3) + "...";
-            }
+
             message = message + new string(' ', maxCharacterWidth - message.Length);
             Console.Write(message);
         }
@@ -33,8 +33,7 @@ namespace SAI_Exporter
             Console.CursorLeft = 0;
             int width = Console.WindowWidth - 1;
             int newWidth = (int)((width * percentage) / 100d);
-            string progBar = new string(progressBarCharacter, newWidth) +
-                    new string(' ', width - newWidth);
+            string progBar = new string(progressBarCharacter, newWidth) + new string(' ', width - newWidth);
             Console.Write(progBar);
             if (string.IsNullOrEmpty(message)) message = "";
             Console.CursorTop++;
