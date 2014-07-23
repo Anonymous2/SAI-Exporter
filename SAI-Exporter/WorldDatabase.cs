@@ -90,7 +90,7 @@ namespace SAI_Exporter
 
         public async Task<List<SmartScript>> GetSmartScripts()
         {
-            DataTable dt = await ExecuteQuery("SELECT * FROM smart_scripts ORDER BY entryorguid");
+            DataTable dt = await ExecuteQuery("SELECT * FROM smart_scripts ORDER BY entryorguid, id");
 
             if (dt.Rows.Count == 0)
                 return null;
